@@ -1,0 +1,17 @@
+# Carpetas generadas
+**/node_modules/**
+**/dist/**
+# Microservicios debackend
+ms-*/
+# Infraestructura
+in-*/
+# Databases
+db-*/
+# Apps Front
+app-*/
+# config
+config/
+# Libraries-ng
+libraries-ng
+# Libraries-nestjs
+libraries-nestjs
