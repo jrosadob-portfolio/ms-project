@@ -1,0 +1,94 @@
+name: 'project-develop'
+
+services:
+  nats-server:
+    image: nats:latest
+    ports:
+      - 8222:8222
+
+  ms-auth:
+    build:
+      context: ./ms-auth
+      dockerfile: Dockerfile.develop
+    image: ms-auth
+    volumes:
+      - ./ms-auth/src:/usr/src
+    command: npm run start:dev
+    environment:
+      - PORT=3004
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${AUTH_DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+
+  ms-gateway:
+    build:
+      context: ./ms-gateway
+      dockerfile: Dockerfile.develop
+    ports:
+      - ${CLIENT_GATEWAY_PORT}:3000
+    image: ms-gateway
+    volumes:
+      - ./ms-gateway/src:/usr/src
+    command: npm run start:dev
+    environment:
+      - PORT=3000
+      - NATS_SERVERS=nats://nats-server:4222
+
+  # ms-orders:
+  #   build:
+  #     context: ./ms-orders
+  #     dockerfile: Dockerfile.develop
+  #     args:
+  #       - ARG_DATABASE_URL=${ARG_DATABASE_URL}
+  #   image: ms-orders
+  #   volumes:
+  #     - ./ms-orders/src:/usr/src/app/src
+  #   command: npm run start:dev
+  #   environment:
+  #     - PORT=3002
+  #     - DATABASE_URL=postgresql://postgres:123456@orders-db:5432/ordersdb?schema=public
+  #     - NATS_SERVERS=nats://nats-server:4222
+
+  ms-payments:
+    build:
+      context: ./ms-payments
+      dockerfile: Dockerfile.develop
+    image: ms-payments
+    volumes:
+      - ./ms-payments/src:/usr/src
+    command: npm run start:dev
+    ports:
+      - ${PAYMENTS_MS_PORT}:${PAYMENTS_MS_PORT}
+    environment:
+      - PORT=${PAYMENTS_MS_PORT}
+      - NATS_SERVERS=nats://nats-server:4222
+      - STRIPE_SECRET=${STRIPE_SECRET}
+      - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
+      - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
+
+  ms-products:
+    build:
+      context: ./ms-products
+      dockerfile: Dockerfile.develop
+    image: ms-products
+    # volumes:
+    #   - ./ms-products/src:/usr/src/app
+    command: npm run start:dev
+    environment:
+      - PORT=3001
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=file:./dev.db
+
+  # ordersDb:
+  #   container_name: ordersDb
+  #   image: postgres:14
+  #   restart: always
+  #   volumes:
+  #     - ./ms-orders/postgres:/var/lib/postgresql/data
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=123456
+  #     - POSTGRES_DB=ordersdb

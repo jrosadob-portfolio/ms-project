@@ -1,0 +1,15 @@
+[submodule "ms-auth"]
+	path = ms-auth
+	url = https://github.com/jrosadob-portfolio/auth-ms.git
+[submodule "ms-gateway"]
+	path = ms-gateway
+	url = https://github.com/jrosadob-portfolio/gateway.git
+[submodule "ms-orders"]
+	path = ms-orders
+	url = https://github.com/jrosadob-portfolio/orders-ms.git
+[submodule "ms-payments"]
+	path = ms-payments
+	url = https://github.com/jrosadob-portfolio/payments-ms.git
+[submodule "ms-products"]
+	path = ms-products
+	url = https://github.com/jrosadob-portfolio/products-ms.git
